@@ -260,6 +260,11 @@
             padding-right: 60px;
         }
 
+        .single-input-area {
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
         .subjects-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -277,6 +282,11 @@
             color: var(--text-secondary);
             margin-bottom: 7px;
             transition: color 0.2s;
+        }
+
+        .input-group label.large-label {
+            font-size: 14px;
+            text-align: right;
         }
 
         .input-group:focus-within label {
@@ -304,9 +314,21 @@
             appearance: none;
         }
 
+        .input-wrapper input.center-input {
+            text-align: center;
+            font-size: 18px;
+            padding: 14px 16px;
+            letter-spacing: 1px;
+        }
+
         .input-wrapper input::placeholder {
             color: var(--text-muted);
             font-weight: 400;
+        }
+
+        .input-wrapper input.center-input::placeholder {
+            font-size: 15px;
+            letter-spacing: 0;
         }
 
         .input-wrapper input:focus,
@@ -343,6 +365,14 @@
             color: var(--text-muted);
             font-weight: 600;
             pointer-events: none;
+        }
+
+        .input-hint {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-weight: 500;
         }
 
         .select-wrapper {
@@ -570,6 +600,13 @@
             color: var(--text);
         }
 
+        .breakdown-item .detail {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
         .promo-card {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             border-radius: var(--radius-lg);
@@ -615,10 +652,12 @@
 
         .promo-logo {
             width: 80%;
-            height: 48px;
-            border-radius: 10px;
+            max-width: 360px;
+            border-radius: 12px;
             object-fit: contain;
             margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
         }
 
         .promo-card h3 {
@@ -626,6 +665,8 @@
             font-weight: 800;
             color: #fff;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
         }
 
         .promo-card p {
@@ -634,6 +675,8 @@
             line-height: 1.9;
             max-width: 420px;
             margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .btn-promo {
@@ -763,11 +806,6 @@
                 height: 46px;
             }
 
-            .promo-logo {
-                width: 40px;
-                height: 40px;
-            }
-
             .bg-blob-1 { width: 250px; height: 250px; }
             .bg-blob-2 { width: 200px; height: 200px; }
         }
@@ -813,6 +851,7 @@
             <p>احسب معدلك التراكمي بدقة وسهولة — أدخل علاماتك واحصل على النتيجة فوراً</p>
         </header>
 
+        <!-- الحادي عشر: معدل واحد من 30 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-icon blue">
@@ -820,43 +859,24 @@
                 </div>
                 <div>
                     <div class="card-title">الصف الحادي عشر</div>
-                    <div class="card-subtitle">المواد المشتركة</div>
+                    <div class="card-subtitle">المعدل التراكمي</div>
                 </div>
                 <div class="card-weight">٪30 من المعدل</div>
             </div>
-            <p class="card-description">أدخل علامتك من 100 في كل مادة من المواد المشتركة الأربعة</p>
-            <div class="subjects-grid">
+            <p class="card-description">أدخل معدلك التراكمي للصف الحادي عشر</p>
+            <div class="single-input-area">
                 <div class="input-group">
-                    <label>التربية الإسلامية</label>
+                    <label class="large-label">المعدل التراكمي</label>
                     <div class="input-wrapper">
-                        <input type="number" id="grade11_1" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
-                        <span class="input-suffix">/ 100</span>
+                        <input type="number" id="grade11_gpa" class="center-input" min="0" max="30" step="0.01" placeholder="مثال: 24.5" oninput="handleInput(this, 30)" onblur="clampValue(this, 30)">
+                        <span class="input-suffix">/ 30</span>
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>اللغة العربية</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="grade11_2" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
-                        <span class="input-suffix">/ 100</span>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>اللغة الإنجليزية</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="grade11_3" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
-                        <span class="input-suffix">/ 100</span>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>تاريخ الأردن</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="grade11_4" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
-                        <span class="input-suffix">/ 100</span>
-                    </div>
-                </div>
+                <div class="input-hint">الحد الأقصى 30 — الحد الأدنى 0</div>
             </div>
         </div>
 
+        <!-- الثاني عشر: علامات كل مادة من 175 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-icon purple">
@@ -868,7 +888,7 @@
                 </div>
                 <div class="card-weight">٪70 من المعدل</div>
             </div>
-            <p class="card-description">اختر الحقل الدراسي ثم أدخل علاماتك في مواد التخصص</p>
+            <p class="card-description">اختر الحقل الدراسي ثم أدخل علاماتك من 175 في كل مادة</p>
             
             <div class="input-group full-width" style="margin-bottom: 22px;">
                 <label>الحقل الدراسي</label>
@@ -907,10 +927,12 @@
                 <div class="breakdown-item">
                     <div class="label">الحادي عشر (٪30)</div>
                     <div class="value" id="breakdown11">—</div>
+                    <div class="detail" id="breakdown11Detail"></div>
                 </div>
                 <div class="breakdown-item">
                     <div class="label">الثاني عشر (٪70)</div>
                     <div class="value" id="breakdown12">—</div>
+                    <div class="detail" id="breakdown12Detail"></div>
                 </div>
             </div>
         </div>
@@ -936,7 +958,9 @@
     </div>
 
     <script>
-        const fieldsData = {
+        var MAX_12 = 175; /* الحد الأعلى لكل مادة في الثاني عشر */
+
+        var fieldsData = {
             health: ["لغة إنجليزية متقدمة (إجباري)", "كيمياء (إجباري)", "أحياء (إجباري)", "مادة اختيارية"],
             engineering: ["رياضيات (إجباري)", "فيزياء (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"],
             tech: ["رياضيات (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية", "مادة اختيارية ثالثة"],
@@ -945,36 +969,36 @@
             law: ["لغة عربية تخصص (إجباري)", "علوم إسلامية تخصص (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"]
         };
 
-        function clampValue(el) {
-            const val = parseFloat(el.value);
+        function clampValue(el, maxVal) {
+            var val = parseFloat(el.value);
             if (isNaN(val) || el.value.trim() === '') return;
 
-            if (val > 100) {
-                el.value = 100;
+            if (val > maxVal) {
+                el.value = maxVal;
                 el.classList.remove('clamped');
                 void el.offsetWidth;
                 el.classList.add('clamped');
-                setTimeout(() => { el.classList.remove('clamped'); }, 600);
-                showToast("العلامة لا يمكن أن تتجاوز 100");
+                setTimeout(function() { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تتجاوز " + maxVal);
             } else if (val < 0) {
                 el.value = 0;
                 el.classList.remove('clamped');
                 void el.offsetWidth;
                 el.classList.add('clamped');
-                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                setTimeout(function() { el.classList.remove('clamped'); }, 600);
                 showToast("العلامة لا يمكن أن تقل عن 0");
             }
         }
 
-        function handleInput(el) {
-            const val = parseFloat(el.value);
-            if (!isNaN(val) && val > 100) {
-                el.value = 100;
+        function handleInput(el, maxVal) {
+            var val = parseFloat(el.value);
+            if (!isNaN(val) && val > maxVal) {
+                el.value = maxVal;
                 el.classList.remove('clamped');
                 void el.offsetWidth;
                 el.classList.add('clamped');
-                setTimeout(() => { el.classList.remove('clamped'); }, 600);
-                showToast("العلامة لا يمكن أن تتجاوز 100");
+                setTimeout(function() { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تتجاوز " + maxVal);
                 return;
             }
             if (!isNaN(val) && val < 0) {
@@ -982,12 +1006,12 @@
                 el.classList.remove('clamped');
                 void el.offsetWidth;
                 el.classList.add('clamped');
-                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                setTimeout(function() { el.classList.remove('clamped'); }, 600);
                 showToast("العلامة لا يمكن أن تقل عن 0");
                 return;
             }
 
-            if (!isNaN(val) && val >= 0 && val <= 100) {
+            if (!isNaN(val) && val >= 0 && val <= maxVal) {
                 el.classList.add('has-value');
             } else {
                 el.classList.remove('has-value');
@@ -995,23 +1019,21 @@
         }
 
         function updateFields() {
-            const field = document.getElementById("fieldSelect").value;
-            const container = document.getElementById("grade12_subjects");
+            var field = document.getElementById("fieldSelect").value;
+            var container = document.getElementById("grade12_subjects");
             if (!field || !fieldsData[field]) {
                 container.innerHTML = '';
                 return;
             }
-            let html = '<div class="subjects-grid">';
-            fieldsData[field].forEach((subject, index) => {
-                html += `
-                    <div class="input-group subject-enter" style="animation-delay: ${index * 0.07}s">
-                        <label>${subject}</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="grade12_${index}" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
-                            <span class="input-suffix">/ 100</span>
-                        </div>
-                    </div>
-                `;
+            var html = '<div class="subjects-grid">';
+            fieldsData[field].forEach(function(subject, index) {
+                html += '<div class="input-group subject-enter" style="animation-delay: ' + (index * 0.07) + 's">' +
+                    '<label>' + subject + '</label>' +
+                    '<div class="input-wrapper">' +
+                        '<input type="number" id="grade12_' + index + '" min="0" max="' + MAX_12 + '" step="0.01" placeholder="—" oninput="handleInput(this, ' + MAX_12 + ')" onblur="clampValue(this, ' + MAX_12 + ')">' +
+                        '<span class="input-suffix">/ ' + MAX_12 + '</span>' +
+                    '</div>' +
+                '</div>';
             });
             html += '</div>';
             container.innerHTML = html;
@@ -1020,68 +1042,83 @@
         }
 
         function showToast(message) {
-            const toast = document.getElementById("toast");
+            var toast = document.getElementById("toast");
             document.getElementById("toastText").textContent = message;
             toast.classList.add("show");
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => { toast.classList.remove("show"); }, 2500);
+            toast._timeout = setTimeout(function() { toast.classList.remove("show"); }, 2500);
         }
 
         function calculateGPA() {
-            for (let i = 1; i <= 4; i++) {
-                clampValue(document.getElementById('grade11_' + i));
+            /* تقييد الحادي عشر */
+            var el11 = document.getElementById('grade11_gpa');
+            clampValue(el11, 30);
+
+            var val11 = parseFloat(el11.value);
+            if (isNaN(val11)) {
+                el11.style.borderColor = 'var(--danger)';
+                setTimeout(function() { el11.style.borderColor = ''; }, 2000);
+                showToast("يرجى إدخال معدل الصف الحادي عشر");
+                return;
             }
 
-            let sum11 = 0, empty11 = false;
-            for (let i = 1; i <= 4; i++) {
-                let el = document.getElementById('grade11_' + i);
-                let val = parseFloat(el.value);
-                if (isNaN(val)) {
-                    empty11 = true;
-                    el.style.borderColor = 'var(--danger)';
-                    setTimeout(() => { el.style.borderColor = ''; }, 2000);
-                }
-                sum11 += isNaN(val) ? 0 : val;
-            }
-            if (empty11) { showToast("يرجى إدخال جميع علامات الصف الحادي عشر"); return; }
-
-            let avg11 = sum11 / 4;
-            let score11 = avg11 * 0.30;
-
-            const field = document.getElementById("fieldSelect").value;
-            if (!field || !fieldsData[field]) { showToast("يرجى اختيار الحقل الدراسي أولاً"); return; }
-
-            for (let i = 0; i < 4; i++) {
-                let inputEl = document.getElementById('grade12_' + i);
-                if (inputEl) clampValue(inputEl);
+            var field = document.getElementById("fieldSelect").value;
+            if (!field || !fieldsData[field]) {
+                showToast("يرجى اختيار الحقل الدراسي أولاً");
+                return;
             }
 
-            let score12 = 0, empty12 = false;
-            for (let i = 0; i < 4; i++) {
-                let inputEl = document.getElementById('grade12_' + i);
+            /* تقييد كل مواد الثاني عشر قبل الحساب */
+            for (var i = 0; i < 4; i++) {
+                var inputEl = document.getElementById('grade12_' + i);
+                if (inputEl) clampValue(inputEl, MAX_12);
+            }
+
+            /* جمع علامات الثاني عشر */
+            var sum12 = 0;
+            var empty12 = false;
+            for (var i = 0; i < 4; i++) {
+                var inputEl = document.getElementById('grade12_' + i);
                 if (!inputEl) continue;
-                let val = parseFloat(inputEl.value);
+                var val = parseFloat(inputEl.value);
                 if (isNaN(val)) {
                     empty12 = true;
                     inputEl.style.borderColor = 'var(--danger)';
-                    setTimeout(() => { inputEl.style.borderColor = ''; }, 2000);
+                    setTimeout((function(el) {
+                        return function() { el.style.borderColor = ''; };
+                    })(inputEl), 2000);
                 }
-                score12 += (isNaN(val) ? 0 : val) * 0.175;
+                sum12 += isNaN(val) ? 0 : val;
             }
-            if (empty12) { showToast("يرجى إدخال جميع علامات الصف الثاني عشر"); return; }
+            if (empty12) {
+                showToast("يرجى إدخال جميع علامات الصف الثاني عشر");
+                return;
+            }
 
-            let totalGPA = score11 + score12;
-            let category;
+            /*
+             * الحساب:
+             * الحادي عشر: المعدل من 30 يدخل مباشرة (30% من 100)
+             * الثاني عشر: مجموع العلامات من 700 (4 × 175) يُحوَّل إلى 70%
+             * النتيجة = val11 + (sum12 / 700 * 70)
+             */
+            var contrib11 = val11;
+            var contrib12 = (sum12 / 700) * 70;
+            var totalGPA = contrib11 + contrib12;
+
+            var category;
             if (totalGPA >= 90) { category = 'excellent'; }
             else if (totalGPA >= 80) { category = 'very-good'; }
             else if (totalGPA >= 70) { category = 'good'; }
             else { category = 'pass'; }
 
-            const resultCard = document.getElementById("resultCard");
-            const resultValue = document.getElementById("resultValue");
+            var resultCard = document.getElementById("resultCard");
+            var resultValue = document.getElementById("resultValue");
             resultValue.className = 'result-value ' + category;
-            document.getElementById("breakdown11").textContent = score11.toFixed(2);
-            document.getElementById("breakdown12").textContent = score12.toFixed(2);
+
+            document.getElementById("breakdown11").textContent = contrib11.toFixed(2);
+            document.getElementById("breakdown11Detail").textContent = val11.toFixed(2) + " / 30";
+            document.getElementById("breakdown12").textContent = contrib12.toFixed(2);
+            document.getElementById("breakdown12Detail").textContent = sum12.toFixed(2) + " / 700";
 
             animateNumber(resultValue, totalGPA);
 
@@ -1089,19 +1126,19 @@
             void resultCard.offsetWidth;
             resultCard.classList.add("show");
 
-            const promoCard = document.getElementById("promoCard");
+            var promoCard = document.getElementById("promoCard");
             promoCard.classList.remove("show");
-            setTimeout(() => { promoCard.classList.add("show"); }, 400);
+            setTimeout(function() { promoCard.classList.add("show"); }, 400);
 
-            setTimeout(() => { resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+            setTimeout(function() { resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
         }
 
         function animateNumber(element, target) {
-            const duration = 800;
-            const startTime = performance.now();
+            var duration = 800;
+            var startTime = performance.now();
             function update(currentTime) {
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
+                var progress = Math.min((currentTime - startTime) / duration, 1);
+                var eased = 1 - Math.pow(1 - progress, 3);
                 element.textContent = (target * eased).toFixed(2);
                 if (progress < 1) requestAnimationFrame(update);
             }
@@ -1109,16 +1146,16 @@
         }
 
         function resetAll() {
-            for (let i = 1; i <= 4; i++) {
-                let el = document.getElementById('grade11_' + i);
-                el.value = '';
-                el.classList.remove('has-value');
-                el.style.borderColor = '';
-            }
+            var el11 = document.getElementById('grade11_gpa');
+            el11.value = '';
+            el11.classList.remove('has-value');
+            el11.style.borderColor = '';
             document.getElementById('fieldSelect').value = '';
             document.getElementById('grade12_subjects').innerHTML = '';
             document.getElementById("resultCard").classList.remove("show");
             document.getElementById("promoCard").classList.remove("show");
+            document.getElementById("breakdown11Detail").textContent = '';
+            document.getElementById("breakdown12Detail").textContent = '';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             showToast("تم إعادة تعيين جميع الحقول");
         }
