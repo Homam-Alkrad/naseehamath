@@ -320,7 +320,6 @@
             background: var(--success-light);
         }
 
-        /* تأثير اهتزاز عند تجاوز 100 */
         .input-wrapper input.clamped {
             animation: inputShake 0.4s ease;
             border-color: var(--danger) !important;
@@ -569,35 +568,6 @@
             font-size: 20px;
             font-weight: 800;
             color: var(--text);
-        }
-
-        .result-message {
-            margin-top: 18px;
-            padding: 12px 20px;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .result-message.excellent {
-            background: var(--success-light);
-            color: #00876A;
-        }
-
-        .result-message.very-good {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .result-message.good {
-            background: #FFF8E7;
-            color: #C47F17;
-        }
-
-        .result-message.pass {
-            background: #FFF5F3;
-            color: #C0392B;
         }
 
         .promo-card {
@@ -943,7 +913,6 @@
                     <div class="value" id="breakdown12">—</div>
                 </div>
             </div>
-            <div class="result-message" id="resultMessage"></div>
         </div>
 
         <div class="promo-card" id="promoCard">
@@ -976,14 +945,12 @@
             law: ["لغة عربية تخصص (إجباري)", "علوم إسلامية تخصص (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"]
         };
 
-        /* === تقييد القيمة: لا تتجاوز 100 ولا تقل عن 0 === */
         function clampValue(el) {
             const val = parseFloat(el.value);
             if (isNaN(val) || el.value.trim() === '') return;
 
             if (val > 100) {
                 el.value = 100;
-                /* تأثير اهتزاز + تحذير بصري */
                 el.classList.remove('clamped');
                 void el.offsetWidth;
                 el.classList.add('clamped');
@@ -1000,7 +967,6 @@
         }
 
         function handleInput(el) {
-            /* تقييد فوري أثناء الكتابة */
             const val = parseFloat(el.value);
             if (!isNaN(val) && val > 100) {
                 el.value = 100;
@@ -1057,13 +1023,11 @@
             const toast = document.getElementById("toast");
             document.getElementById("toastText").textContent = message;
             toast.classList.add("show");
-            /* إزالة الإشعار السابق إذا كان موجوداً لمنع التكرار السريع */
             clearTimeout(toast._timeout);
             toast._timeout = setTimeout(() => { toast.classList.remove("show"); }, 2500);
         }
 
         function calculateGPA() {
-            /* تقييد نهائي لكل حقول الحادي عشر قبل الحساب */
             for (let i = 1; i <= 4; i++) {
                 clampValue(document.getElementById('grade11_' + i));
             }
@@ -1087,7 +1051,6 @@
             const field = document.getElementById("fieldSelect").value;
             if (!field || !fieldsData[field]) { showToast("يرجى اختيار الحقل الدراسي أولاً"); return; }
 
-            /* تقييد نهائي لكل حقول الثاني عشر قبل الحساب */
             for (let i = 0; i < 4; i++) {
                 let inputEl = document.getElementById('grade12_' + i);
                 if (inputEl) clampValue(inputEl);
@@ -1108,17 +1071,15 @@
             if (empty12) { showToast("يرجى إدخال جميع علامات الصف الثاني عشر"); return; }
 
             let totalGPA = score11 + score12;
-            let category, message;
-            if (totalGPA >= 90) { category = 'excellent'; message = 'ممتاز — أداء رائع ومتميز! 🌟'; }
-            else if (totalGPA >= 80) { category = 'very-good'; message = 'جيد جداً — نتائج ممتازة! 🎯'; }
-            else if (totalGPA >= 70) { category = 'good'; message = 'جيد — استمر بالتفوق! 📚'; }
-            else { category = 'pass'; message = 'يمكنك التحسن — لا تستسلم! 💪'; }
+            let category;
+            if (totalGPA >= 90) { category = 'excellent'; }
+            else if (totalGPA >= 80) { category = 'very-good'; }
+            else if (totalGPA >= 70) { category = 'good'; }
+            else { category = 'pass'; }
 
             const resultCard = document.getElementById("resultCard");
             const resultValue = document.getElementById("resultValue");
             resultValue.className = 'result-value ' + category;
-            document.getElementById("resultMessage").className = 'result-message ' + category;
-            document.getElementById("resultMessage").textContent = message;
             document.getElementById("breakdown11").textContent = score11.toFixed(2);
             document.getElementById("breakdown12").textContent = score12.toFixed(2);
 
