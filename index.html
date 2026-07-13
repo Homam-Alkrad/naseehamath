@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة معدل التوجيهي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #4F6BF6;
+            --primary-light: #EEF1FE;
+            --primary-dark: #3A52D5;
+            --accent: #6C5CE7;
+            --success: #00B894;
+            --success-light: #E8FBF5;
+            --warning: #FDCB6E;
+            --danger: #E17055;
+            --bg: #F7F8FC;
+            --card: #FFFFFF;
+            --text: #2D3436;
+            --text-secondary: #636E72;
+            --text-muted: #B2BEC3;
+            --border: #E8ECF1;
+            --border-focus: #4F6BF6;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+            --shadow-xl: 0 20px 50px rgba(0,0,0,0.1);
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: blobFloat 20s ease-in-out infinite;
+        }
+
+        .bg-blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #4F6BF6;
+            top: -100px;
+            right: -100px;
+            opacity: 0.12;
+        }
+
+        .bg-blob-2 {
+            width: 350px;
+            height: 350px;
+            background: #6C5CE7;
+            bottom: -80px;
+            left: -80px;
+            opacity: 0.1;
+            animation-delay: -7s;
+        }
+
+        .bg-blob-3 {
+            width: 250px;
+            height: 250px;
+            background: #00B894;
+            top: 50%;
+            left: 50%;
+            opacity: 0.06;
+            animation-delay: -14s;
+        }
+
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.05); }
+            50% { transform: translate(-20px, 30px) scale(0.95); }
+            75% { transform: translate(20px, 20px) scale(1.02); }
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(79,107,246,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79,107,246,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* === Logo — بسيط جداً === */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 8px;
+            display: none;
+        }
+
+        .logo-wrapper img {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 36px;
+            padding-top: 6px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 18px;
+            border-radius: 50px;
+            margin-bottom: 18px;
+        }
+
+        .header-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(26px, 5vw, 36px);
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 440px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 6px;
+        }
+
+        .card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .card-icon.blue {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .card-icon.purple {
+            background: #F0EDFF;
+            color: var(--accent);
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .card-weight {
+            margin-right: auto;
+            background: var(--bg);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 22px;
+            margin-top: 4px;
+            padding-right: 60px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 7px;
+            transition: color 0.2s;
+        }
+
+        .input-group:focus-within label {
+            color: var(--primary);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 500;
+            color: var(--text);
+            background: var(--card);
+            outline: none;
+            transition: all 0.25s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(79,107,246,0.1);
+        }
+
+        .input-wrapper input.has-value {
+            border-color: var(--success);
+            background: var(--success-light);
+        }
+
+        .input-suffix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 5px 5px 0 5px;
+            border-color: var(--text-muted) transparent transparent transparent;
+            pointer-events: none;
+            transition: transform 0.2s;
+        }
+
+        .select-wrapper:focus-within::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .select-wrapper select {
+            cursor: pointer;
+            padding-left: 40px;
+        }
+
+        .input-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .subject-enter {
+            animation: subjectSlideIn 0.35s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes subjectSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-calculate {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 17px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79,107,246,0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .btn-calculate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-calculate:hover::before {
+            left: 100%;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(79,107,246,0.4);
+        }
+
+        .btn-calculate:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(79,107,246,0.3);
+        }
+
+        .btn-calculate svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-reset {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 13px 32px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1.5px dashed var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-top: 10px;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: #FFF5F3;
+        }
+
+        .btn-reset svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .result-card {
+            background: var(--card);
+            border-radius: var(--radius-xl);
+            border: 1.5px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            padding: 36px 28px;
+            text-align: center;
+            margin-top: 24px;
+            display: none;
+            animation: resultPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .result-card.show {
+            display: block;
+        }
+
+        @keyframes resultPop {
+            from { opacity: 0; transform: scale(0.9) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: clamp(48px, 10vw, 64px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .result-value.excellent {
+            background: linear-gradient(135deg, #00B894, #00CEC9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-value.very-good {
+            background: linear-gradient(135deg, #4F6BF6, #6C5CE7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-value.good {
+            background: linear-gradient(135deg, #FDCB6E, #E17055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-value.pass {
+            background: linear-gradient(135deg, #E17055, #D63031);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-percent {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .result-divider {
+            width: 60px;
+            height: 3px;
+            background: var(--border);
+            border-radius: 3px;
+            margin: 20px auto;
+        }
+
+        .result-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .breakdown-item {
+            text-align: center;
+        }
+
+        .breakdown-item .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .result-message {
+            margin-top: 18px;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .result-message.excellent {
+            background: var(--success-light);
+            color: #00876A;
+        }
+
+        .result-message.very-good {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .result-message.good {
+            background: #FFF8E7;
+            color: #C47F17;
+        }
+
+        .result-message.pass {
+            background: #FFF5F3;
+            color: #C0392B;
+        }
+
+        .promo-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: promoSlide 0.6s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-card.show {
+            display: block;
+        }
+
+        .promo-card::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 50%;
+        }
+
+        .promo-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        @keyframes promoSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .promo-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: contain;
+            margin-bottom: 14px;
+        }
+
+        .promo-card h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .promo-card p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.9;
+            max-width: 420px;
+            margin: 0 auto 20px;
+        }
+
+        .btn-promo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 32px;
+            background: #fff;
+            color: var(--primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-promo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+            background: #F8F9FF;
+        }
+
+        .btn-promo:active {
+            transform: translateY(0);
+        }
+
+        .btn-promo svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s;
+        }
+
+        .btn-promo:hover svg {
+            transform: translateX(-4px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2D3436;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Tajawal', sans-serif;
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .page-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .page-wrapper {
+                padding: 16px 14px 50px;
+            }
+
+            .card {
+                padding: 22px 18px;
+                border-radius: var(--radius-md);
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .card-description {
+                padding-right: 0;
+            }
+
+            .card-header {
+                flex-wrap: wrap;
+            }
+
+            .card-weight {
+                margin-right: 0;
+                margin-top: 4px;
+            }
+
+            .result-breakdown {
+                gap: 20px;
+            }
+
+            .result-card {
+                padding: 28px 20px;
+            }
+
+            .promo-card {
+                padding: 26px 20px;
+            }
+
+            .logo-wrapper img {
+                width: 46px;
+                height: 46px;
+            }
+
+            .promo-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .bg-blob-1 { width: 250px; height: 250px; }
+            .bg-blob-2 { width: 200px; height: 200px; }
+        }
+
+        @media (min-width: 601px) and (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+        <div class="bg-blob bg-blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="page-wrapper">
+        <div class="logo-wrapper">
+            <img src="logo.jpg" alt="النصيحة التعليمي">
+        </div>
+
+        <header class="page-header">
+            <div class="header-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                جيل 2008
+            </div>
+            <h1>حاسبة معدل <span>التوجيهي</span></h1>
+            <p>احسب معدلك التراكمي بدقة وسهولة — أدخل علاماتك واحصل على النتيجة فوراً</p>
+        </header>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div>
+                    <div class="card-title">الصف الحادي عشر</div>
+                    <div class="card-subtitle">المواد المشتركة</div>
+                </div>
+                <div class="card-weight">٪30 من المعدل</div>
+            </div>
+            <p class="card-description">أدخل علامتك من 100 في كل مادة من المواد المشتركة الأربعة</p>
+            <div class="subjects-grid">
+                <div class="input-group">
+                    <label>التربية الإسلامية</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="grade11_1" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <span class="input-suffix">/ 100</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>اللغة العربية</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="grade11_2" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <span class="input-suffix">/ 100</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>اللغة الإنجليزية</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="grade11_3" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <span class="input-suffix">/ 100</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>تاريخ الأردن</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="grade11_4" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <span class="input-suffix">/ 100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <div>
+                    <div class="card-title">الصف الثاني عشر</div>
+                    <div class="card-subtitle">المواد التخصصية</div>
+                </div>
+                <div class="card-weight">٪70 من المعدل</div>
+            </div>
+            <p class="card-description">اختر الحقل الدراسي ثم أدخل علاماتك في مواد التخصص</p>
+            
+            <div class="input-group full-width" style="margin-bottom: 22px;">
+                <label>الحقل الدراسي</label>
+                <div class="input-wrapper select-wrapper">
+                    <select id="fieldSelect" onchange="updateFields()">
+                        <option value="" disabled selected>اختر الحقل الدراسي...</option>
+                        <option value="health">الحقل الصحي</option>
+                        <option value="engineering">الحقل الهندسي</option>
+                        <option value="tech">حقل العلوم والتكنولوجيا</option>
+                        <option value="social">حقل اللغات والعلوم الاجتماعية</option>
+                        <option value="business">حقل الأعمال</option>
+                        <option value="law">حقل القانون والشريعة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="grade12_subjects"></div>
+        </div>
+
+        <button class="btn-calculate" onclick="calculateGPA()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+            احسب المعدل النهائي
+        </button>
+
+        <button class="btn-reset" onclick="resetAll()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            إعادة تعيين الحقول
+        </button>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-label">المعدل التراكمي النهائي</div>
+            <div class="result-value" id="resultValue">0.00</div>
+            <div class="result-percent">من 100</div>
+            <div class="result-divider"></div>
+            <div class="result-breakdown">
+                <div class="breakdown-item">
+                    <div class="label">الحادي عشر (٪30)</div>
+                    <div class="value" id="breakdown11">—</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="label">الثاني عشر (٪70)</div>
+                    <div class="value" id="breakdown12">—</div>
+                </div>
+            </div>
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+
+        <div class="promo-card" id="promoCard">
+            <img src="logo.jpg" alt="النصيحة التعليمي" class="promo-logo">
+            <h3>موقع النصيحة التعليمي</h3>
+            <p>استكشف الدورات وكل ما يتعلق بالتوجيهي على موقعنا — شروحات مُبسّطة، تمارين تفاعلية، ونصائح ذهبية لتحقيق أعلى المعدلات</p>
+            <a href="https://naseehamath.com/" target="_blank" class="btn-promo">
+                <span>زيارة الموقع</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </a>
+        </div>
+
+        <footer class="page-footer">
+            <p>حاسبة معدل التوجيهي — جيل 2008 &nbsp;|&nbsp; الحساب تقريبي لأغراض استرشادية</p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FDCB6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="toastText"></span>
+    </div>
+
+    <script>
+        const fieldsData = {
+            health: ["لغة إنجليزية متقدمة (إجباري)", "كيمياء (إجباري)", "أحياء (إجباري)", "مادة اختيارية"],
+            engineering: ["رياضيات (إجباري)", "فيزياء (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"],
+            tech: ["رياضيات (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية", "مادة اختيارية ثالثة"],
+            social: ["لغة عربية تخصص (إجباري)", "لغة إنجليزية متقدمة (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"],
+            business: ["رياضيات أعمال (إجباري)", "ثقافة مالية (إجباري)", "لغة إنجليزية متقدمة (إجباري)", "مادة اختيارية"],
+            law: ["لغة عربية تخصص (إجباري)", "علوم إسلامية تخصص (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"]
+        };
+
+        function handleInput(el) {
+            const val = parseFloat(el.value);
+            if (!isNaN(val) && val >= 0 && val <= 100) {
+                el.classList.add('has-value');
+            } else {
+                el.classList.remove('has-value');
+            }
+        }
+
+        function updateFields() {
+            const field = document.getElementById("fieldSelect").value;
+            const container = document.getElementById("grade12_subjects");
+            if (!field || !fieldsData[field]) {
+                container.innerHTML = '';
+                return;
+            }
+            let html = '<div class="subjects-grid">';
+            fieldsData[field].forEach((subject, index) => {
+                html += `
+                    <div class="input-group subject-enter" style="animation-delay: ${index * 0.07}s">
+                        <label>${subject}</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="grade12_${index}" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                            <span class="input-suffix">/ 100</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById("resultCard").classList.remove("show");
+            document.getElementById("promoCard").classList.remove("show");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastText").textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 3000);
+        }
+
+        function calculateGPA() {
+            let sum11 = 0, empty11 = false;
+            for (let i = 1; i <= 4; i++) {
+                let el = document.getElementById('grade11_' + i);
+                let val = parseFloat(el.value);
+                if (isNaN(val)) {
+                    empty11 = true;
+                    el.style.borderColor = 'var(--danger)';
+                    setTimeout(() => { el.style.borderColor = ''; }, 2000);
+                }
+                sum11 += isNaN(val) ? 0 : val;
+            }
+            if (empty11) { showToast("يرجى إدخال جميع علامات الصف الحادي عشر"); return; }
+
+            let avg11 = sum11 / 4;
+            let score11 = avg11 * 0.30;
+
+            const field = document.getElementById("fieldSelect").value;
+            if (!field || !fieldsData[field]) { showToast("يرجى اختيار الحقل الدراسي أولاً"); return; }
+
+            let score12 = 0, empty12 = false;
+            for (let i = 0; i < 4; i++) {
+                let inputEl = document.getElementById('grade12_' + i);
+                if (!inputEl) continue;
+                let val = parseFloat(inputEl.value);
+                if (isNaN(val)) {
+                    empty12 = true;
+                    inputEl.style.borderColor = 'var(--danger)';
+                    setTimeout(() => { inputEl.style.borderColor = ''; }, 2000);
+                }
+                score12 += (isNaN(val) ? 0 : val) * 0.175;
+            }
+            if (empty12) { showToast("يرجى إدخال جميع علامات الصف الثاني عشر"); return; }
+
+            let totalGPA = score11 + score12;
+            let category, message;
+            if (totalGPA >= 90) { category = 'excellent'; message = 'ممتاز — أداء رائع ومتميز! 🌟'; }
+            else if (totalGPA >= 80) { category = 'very-good'; message = 'جيد جداً — نتائج ممتازة! 🎯'; }
+            else if (totalGPA >= 70) { category = 'good'; message = 'جيد — استمر بالتفوق! 📚'; }
+            else { category = 'pass'; message = 'يمكنك التحسن — لا تستسلم! 💪'; }
+
+            const resultCard = document.getElementById("resultCard");
+            const resultValue = document.getElementById("resultValue");
+            resultValue.className = 'result-value ' + category;
+            document.getElementById("resultMessage").className = 'result-message ' + category;
+            document.getElementById("resultMessage").textContent = message;
+            document.getElementById("breakdown11").textContent = score11.toFixed(2);
+            document.getElementById("breakdown12").textContent = score12.toFixed(2);
+
+            animateNumber(resultValue, totalGPA);
+
+            resultCard.classList.remove("show");
+            void resultCard.offsetWidth;
+            resultCard.classList.add("show");
+
+            const promoCard = document.getElementById("promoCard");
+            promoCard.classList.remove("show");
+            setTimeout(() => { promoCard.classList.add("show"); }, 400);
+
+            setTimeout(() => { resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+        }
+
+        function animateNumber(element, target) {
+            const duration = 800;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                element.textContent = (target * eased).toFixed(2);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        function resetAll() {
+            for (let i = 1; i <= 4; i++) {
+                let el = document.getElementById('grade11_' + i);
+                el.value = '';
+                el.classList.remove('has-value');
+                el.style.borderColor = '';
+            }
+            document.getElementById('fieldSelect').value = '';
+            document.getElementById('grade12_subjects').innerHTML = '';
+            document.getElementById("resultCard").classList.remove("show");
+            document.getElementById("promoCard").classList.remove("show");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast("تم إعادة تعيين جميع الحقول");
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') calculateGPA();
+        });
+    </script>
+</body>
+</html>
