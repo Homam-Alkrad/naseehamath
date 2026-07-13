@@ -124,7 +124,6 @@
             padding: 30px 20px 60px;
         }
 
-        /* === Logo — بسيط جداً === */
         .logo-wrapper {
             text-align: center;
             margin-bottom: 8px;
@@ -319,6 +318,21 @@
         .input-wrapper input.has-value {
             border-color: var(--success);
             background: var(--success-light);
+        }
+
+        /* تأثير اهتزاز عند تجاوز 100 */
+        .input-wrapper input.clamped {
+            animation: inputShake 0.4s ease;
+            border-color: var(--danger) !important;
+            background: #FFF5F3 !important;
+        }
+
+        @keyframes inputShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
         }
 
         .input-suffix {
@@ -845,28 +859,28 @@
                 <div class="input-group">
                     <label>التربية الإسلامية</label>
                     <div class="input-wrapper">
-                        <input type="number" id="grade11_1" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <input type="number" id="grade11_1" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
                         <span class="input-suffix">/ 100</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>اللغة العربية</label>
                     <div class="input-wrapper">
-                        <input type="number" id="grade11_2" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <input type="number" id="grade11_2" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
                         <span class="input-suffix">/ 100</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>اللغة الإنجليزية</label>
                     <div class="input-wrapper">
-                        <input type="number" id="grade11_3" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <input type="number" id="grade11_3" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
                         <span class="input-suffix">/ 100</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>تاريخ الأردن</label>
                     <div class="input-wrapper">
-                        <input type="number" id="grade11_4" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                        <input type="number" id="grade11_4" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
                         <span class="input-suffix">/ 100</span>
                     </div>
                 </div>
@@ -962,8 +976,51 @@
             law: ["لغة عربية تخصص (إجباري)", "علوم إسلامية تخصص (إجباري)", "مادة اختيارية أولى", "مادة اختيارية ثانية"]
         };
 
-        function handleInput(el) {
+        /* === تقييد القيمة: لا تتجاوز 100 ولا تقل عن 0 === */
+        function clampValue(el) {
             const val = parseFloat(el.value);
+            if (isNaN(val) || el.value.trim() === '') return;
+
+            if (val > 100) {
+                el.value = 100;
+                /* تأثير اهتزاز + تحذير بصري */
+                el.classList.remove('clamped');
+                void el.offsetWidth;
+                el.classList.add('clamped');
+                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تتجاوز 100");
+            } else if (val < 0) {
+                el.value = 0;
+                el.classList.remove('clamped');
+                void el.offsetWidth;
+                el.classList.add('clamped');
+                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تقل عن 0");
+            }
+        }
+
+        function handleInput(el) {
+            /* تقييد فوري أثناء الكتابة */
+            const val = parseFloat(el.value);
+            if (!isNaN(val) && val > 100) {
+                el.value = 100;
+                el.classList.remove('clamped');
+                void el.offsetWidth;
+                el.classList.add('clamped');
+                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تتجاوز 100");
+                return;
+            }
+            if (!isNaN(val) && val < 0) {
+                el.value = 0;
+                el.classList.remove('clamped');
+                void el.offsetWidth;
+                el.classList.add('clamped');
+                setTimeout(() => { el.classList.remove('clamped'); }, 600);
+                showToast("العلامة لا يمكن أن تقل عن 0");
+                return;
+            }
+
             if (!isNaN(val) && val >= 0 && val <= 100) {
                 el.classList.add('has-value');
             } else {
@@ -984,7 +1041,7 @@
                     <div class="input-group subject-enter" style="animation-delay: ${index * 0.07}s">
                         <label>${subject}</label>
                         <div class="input-wrapper">
-                            <input type="number" id="grade12_${index}" min="0" max="100" placeholder="—" oninput="handleInput(this)">
+                            <input type="number" id="grade12_${index}" min="0" max="100" placeholder="—" oninput="handleInput(this)" onblur="clampValue(this)">
                             <span class="input-suffix">/ 100</span>
                         </div>
                     </div>
@@ -1000,10 +1057,17 @@
             const toast = document.getElementById("toast");
             document.getElementById("toastText").textContent = message;
             toast.classList.add("show");
-            setTimeout(() => { toast.classList.remove("show"); }, 3000);
+            /* إزالة الإشعار السابق إذا كان موجوداً لمنع التكرار السريع */
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.classList.remove("show"); }, 2500);
         }
 
         function calculateGPA() {
+            /* تقييد نهائي لكل حقول الحادي عشر قبل الحساب */
+            for (let i = 1; i <= 4; i++) {
+                clampValue(document.getElementById('grade11_' + i));
+            }
+
             let sum11 = 0, empty11 = false;
             for (let i = 1; i <= 4; i++) {
                 let el = document.getElementById('grade11_' + i);
@@ -1022,6 +1086,12 @@
 
             const field = document.getElementById("fieldSelect").value;
             if (!field || !fieldsData[field]) { showToast("يرجى اختيار الحقل الدراسي أولاً"); return; }
+
+            /* تقييد نهائي لكل حقول الثاني عشر قبل الحساب */
+            for (let i = 0; i < 4; i++) {
+                let inputEl = document.getElementById('grade12_' + i);
+                if (inputEl) clampValue(inputEl);
+            }
 
             let score12 = 0, empty12 = false;
             for (let i = 0; i < 4; i++) {
